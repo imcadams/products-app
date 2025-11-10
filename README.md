@@ -1,6 +1,27 @@
 # Product Catalog API
 
-A RESTful Product Catalog API built with .NET 8 and Entity Framework Core, demonstrating clean architecture principles, repository pattern, and optimized database design.
+A RESTful Product Catalog API built with .NET 8 and Entity Framework Core, with an Angular 20 frontend, demonstrating clean architecture principles, repository pattern, and optimized database design.
+
+## 🎯 Features
+
+**Backend API:**
+- ✅ RESTful API with full CRUD operations
+- ✅ Product search with multiple filters (text, category, price range, stock)
+- ✅ Pagination and sorting
+- ✅ Entity Framework Core with SQL Server
+- ✅ Repository pattern with clean architecture
+- ✅ Comprehensive error handling and logging
+- ✅ Swagger/OpenAPI documentation
+- ✅ Database seeding with sample data
+
+**Angular Frontend:**
+- ✅ Product list with responsive table layout
+- ✅ Real-time data from REST API
+- ✅ Loading indicators and error handling
+- ✅ Currency formatting
+- ✅ Retry mechanism for failed requests
+- ✅ Modern standalone components (Angular 20)
+- ✅ TypeScript with full type safety
 
 ---
 
@@ -8,11 +29,20 @@ A RESTful Product Catalog API built with .NET 8 and Entity Framework Core, demon
 
 ### Prerequisites
 
+**Backend:**
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) (version 8.0.413 or later)
 - [SQL Server Express](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) (LocalDB or full instance)
-- A code editor (Visual Studio 2022, VS Code, or Rider)
+
+**Frontend:**
+- [Node.js](https://nodejs.org/) (LTS version recommended - v22.16.0+)
+- [Angular CLI](https://angular.io/cli) (version 20.3.9 installed)
+
+**Editor:**
+- Visual Studio 2022, VS Code, or Rider
 
 ### Setup and Run Instructions
+
+#### Backend API
 
 1. **Clone the repository**
    ```bash
@@ -29,7 +59,7 @@ A RESTful Product Catalog API built with .NET 8 and Entity Framework Core, demon
    }
    ```
 
-3. **Run the application**
+3. **Run the API**
    
    The application will automatically:
    - Apply EF Core migrations to create the database schema
@@ -43,14 +73,37 @@ A RESTful Product Catalog API built with .NET 8 and Entity Framework Core, demon
 
 4. **Access the API**
    
-   - Swagger UI: `https://localhost:7244` (or `http://localhost:5115`)
-   - API Base URL: `https://localhost:7244/api`
+   - Swagger UI: `http://localhost:5115` (default HTTP profile)
+   - API Base URL: `http://localhost:5115/api`
+   - HTTPS (if using `--launch-profile https`): `https://localhost:7244`
 
-5. **Run tests**
+#### Angular Frontend
+
+1. **Install dependencies**
    ```bash
-   cd src/backend/ProductCatalog.Tests
-   dotnet test
+   cd products-frontend
+   npm install
    ```
+
+2. **Start the development server**
+   ```bash
+   ng serve
+   ```
+
+3. **Access the application**
+   
+   - Frontend UI: `http://localhost:4200`
+   - The frontend connects to the API at `http://localhost:5115/api`
+
+> **Note**: The Angular app is configured to use the HTTP endpoint. If you start the API with HTTPS (`dotnet run --launch-profile https`), update `products-frontend/src/app/services/product.ts` to use `https://localhost:7244/api`.
+
+#### Run Tests
+
+**Backend Tests:**
+```bash
+cd src/backend/ProductCatalog.Tests
+dotnet test
+```
 
 ---
 
@@ -93,6 +146,74 @@ This project implements **Clean Architecture** (also known as Onion Architecture
 - **Maintainability**: Each layer has a single responsibility
 - **Flexibility**: Database or external services can be swapped without affecting business logic
 - **Domain-Centric**: Core business rules live in the Core project, independent of frameworks
+
+### Frontend Architecture (Angular)
+
+The Angular frontend follows modern Angular best practices with standalone components:
+
+```
+┌─────────────────────────────────────────┐
+│         Components Layer                │
+│  - ProductListComponent                 │
+│  - Displays products in table format    │
+│  - Handles loading/error states         │
+└──────────────────┬──────────────────────┘
+                   │
+┌──────────────────▼──────────────────────┐
+│         Services Layer                  │
+│  - ProductService                       │
+│  - HTTP communication with API          │
+│  - Error handling                       │
+└──────────────────┬──────────────────────┘
+                   │
+┌──────────────────▼──────────────────────┐
+│         Models Layer                    │
+│  - Product interface                    │
+│  - Type definitions                     │
+└─────────────────────────────────────────┘
+```
+
+**Technology Stack:**
+- **Angular 20**: Latest version with standalone components
+- **TypeScript 5.9**: Strong typing and modern JavaScript features
+- **RxJS 7.8**: Reactive programming for async operations
+- **Angular Router**: Client-side routing
+- **HttpClient**: HTTP communication with the backend API
+
+**Key Features:**
+- ✅ Standalone components (no NgModules required)
+- ✅ Dependency injection for services
+- ✅ Reactive data flow with Observables
+- ✅ `*ngFor` and `*ngIf` directives for dynamic rendering
+- ✅ Error handling with user-friendly messages
+- ✅ Loading states for better UX
+- ✅ Currency pipe for price formatting
+- ✅ Responsive table layout
+- ✅ Retry functionality on errors
+
+**Implementation Details:**
+
+1. **Product Service** (`src/app/services/product.ts`)
+   - Injects `HttpClient` for API communication
+   - Configured to connect to `http://localhost:5115/api`
+   - Returns `Observable<Product[]>` for reactive data handling
+   - Implements comprehensive error handling with `catchError`
+
+2. **Product List Component** (`src/app/components/product-list/`)
+   - Displays products in a clean, responsive table
+   - Shows: Product Name, Price (formatted), Category Name, Stock Quantity
+   - Manages three states: loading, success, and error
+   - Implements retry mechanism for failed requests
+
+3. **Routing Configuration**
+   - Default route redirects to `/products`
+   - Standalone routing with `provideRouter()`
+   - Uses `<router-outlet>` for component rendering
+
+4. **HTTP Configuration**
+   - Uses `provideHttpClient()` in `app.config.ts`
+   - Modern standalone approach (Angular 14+)
+   - CORS handled by backend "AllowAll" policy
 
 ### Database Schema
 
@@ -581,6 +702,20 @@ dotnet test
 
 ```
 ProductCatalog.sln
+├── products-frontend/              # Angular Frontend
+│   ├── src/app/
+│   │   ├── components/
+│   │   │   └── product-list/       # Product list component
+│   │   ├── models/
+│   │   │   └── product.ts          # Product interface
+│   │   ├── services/
+│   │   │   └── product.service.ts  # HTTP service
+│   │   ├── app.config.ts           # App configuration
+│   │   ├── app.routes.ts           # Routing configuration
+│   │   └── app.ts                  # Root component
+│   ├── angular.json                # Angular CLI config
+│   └── package.json                # npm dependencies
+│
 ├── src/backend/
 │   ├── ProductCatalog.API          # Presentation Layer
 │   │   ├── Controllers/            # API endpoints

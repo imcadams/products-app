@@ -1,0 +1,41 @@
+<div class="product-list-container">
+  <h1>Product Catalog</h1>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="loading" class="loading">
+    <p>Loading products...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="error">
+    <p>{{ errorMessage }}</p>
+    <button (click)="loadProducts()">Retry</button>
+  </div>
+
+  <!-- Products Table -->
+  <div *ngIf="!loading && !errorMessage && products.length > 0" class="products-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Category</th>
+          <th>Stock Quantity</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of products">
+          <td>{{ product.name }}</td>
+          <td>{{ product.price | currency }}</td>
+          <td>{{ product.categoryName }}</td>
+          <td>{{ product.stockQuantity }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- No Products Message -->
+  <div *ngIf="!loading && !errorMessage && products.length === 0" class="no-products">
+    <p>No products available.</p>
+  </div>
+</div>

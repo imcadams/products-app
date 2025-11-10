@@ -1,0 +1,16 @@
+header {
+  background-color: #1976d2;
+  color: white;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+header nav h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+main {
+  min-height: calc(100vh - 80px);
+  padding: 20px;
+}
